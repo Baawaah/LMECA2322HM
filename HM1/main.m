@@ -292,8 +292,8 @@ p03     = p0sh13;
 Qm3 = QmP(p03,T0e,Astar);
 %% ==========
 % Plotting
-step = 200;
-Xplot = linspace(0,0.33,step);
+step = 1000;
+Xplot = linspace(0,0.39,step);
 %% ==========
 % CASE 1: 
 p0star = p0i/ fp0pstar0(M_in);
