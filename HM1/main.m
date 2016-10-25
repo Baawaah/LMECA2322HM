@@ -318,7 +318,13 @@ end
 p0star = p0i2/ fp0pstar0(M_ind2);
 pstar   = pi2/  fppstar(M_ind2);
 for i = 1 : step
-  if Xplot(i) < 0.07 %Nozzle
+  if Xplot(i) < 0.03 %Nozzle
+     AstarASolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M)- ( Astar/(2*height(Xplot(i))*nozzle_w));
+     result(i,4) = fsolve(AstarASolve,0.5,options);
+     result(i,5) = p0sh12;
+     result(i,6) = p0sh12/P0P(result(i,4));
+  end  
+  if (Xplot(i) > 0.03)&&(Xplot(i) <= 0.07) %Nozzle
      AstarASolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M)- ( Astar/(2*height(Xplot(i))*nozzle_w));
      result(i,4) = fsolve(AstarASolve,1.2,options);
      result(i,5) = p0sh12;
@@ -344,7 +350,13 @@ end
 p0star = p0i3/ fp0pstar0(M_ind3);
 pstar   = pi3/  fppstar(M_ind3);
 for i = 1 : step
-  if Xplot(i) <= 0.12 %Nozzle
+  if Xplot(i) <= 0.03 %Nozzle
+     AstarASolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M)- ( Astar/(2*height(Xplot(i))*nozzle_w));
+     result(i,7) = fsolve(AstarASolve,0.5,options);
+     result(i,8) = p0sh13;
+     result(i,9) = p0sh13/P0P(result(i,7));
+  end  
+  if (Xplot(i) > 0.03)&&(Xplot(i) <= 0.12) %Nozzle
      AstarASolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M)- ( Astar/(2*height(Xplot(i))*nozzle_w));
      result(i,7) = fsolve(AstarASolve,1.2,options);
      result(i,8) = p0sh13;
