@@ -24,7 +24,6 @@ duct_h = nozzle_he; % [m]
 duct_d = 0.015;     % [m]
 duct_l = 0.270;     % [m]
 duct_coeff = (duct_d + duct_w) / duct_w; %[adimensionnel]
-Dh_duct = 4*(duct_w * duct_d) / (2*( duct_w + duct_d)); %diam hydrolique pour Reynolds
 A_duct = duct_w * duct_d; %[m²]
 
 % For this problematic
@@ -110,8 +109,8 @@ while error > 0.0001
    ro_i = pi/ (Ti* R);
  
    % calcule du Reynolds
-   Re_ex = M_ex * veloC(Te) * Dh_duct *ro_e / mu_T(Te);
-   Re_in = M_in * veloC(Ti) * Dh_duct *ro_i / mu_T(Ti);
+   Re_ex = M_ex * veloC(Te) * duct_d *ro_e / mu_T(Te);
+   Re_in = M_in * veloC(Ti) * duct_d *ro_i / mu_T(Ti);
    Re_duct = (Re_ex + Re_in)/2;
 
    % recalcule du lambda 
@@ -197,8 +196,8 @@ while error2 > 0.0001
    ro_i2 = pi2/ (Ti2* R);
  
    % calcule du Reynolds
-   Re_ex2 = M_ex2 * veloC(Te2) * Dh_duct *ro_e2 / mu_T(Te2);
-   Re_in2 = M_ind2 * veloC(Ti2) * Dh_duct *ro_i2 / mu_T(Ti2);
+   Re_ex2 = M_ex2 * veloC(Te2) * duct_d *ro_e2 / mu_T(Te2);
+   Re_in2 = M_ind2 * veloC(Ti2) * duct_d *ro_i2 / mu_T(Ti2);
    Re_duct2 = (Re_ex2 + Re_in2)/2;
 
    % recalcule du lambda 
@@ -266,8 +265,8 @@ while error3 > 0.0001
    ro_i3 = pi3/ (Ti3* R);
  
    % calcule du Reynolds
-   Re_ex3 = M_ex3  * veloC(Te3) * Dh_duct *ro_e3 / mu_T(Te3);
-   Re_in3 = M_ind3 * veloC(Ti3) * Dh_duct *ro_i3 / mu_T(Ti3);
+   Re_ex3 = M_ex3  * veloC(Te3) * duct_d *ro_e3 / mu_T(Te3);
+   Re_in3 = M_ind3 * veloC(Ti3) * duct_d *ro_i3 / mu_T(Ti3);
    Re_duct3 = (Re_ex3 + Re_in3)/2;
 
    % recalcule du lambda 
