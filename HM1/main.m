@@ -16,7 +16,7 @@ nozzle_he = nozzle_de / 2;  % [m]
 nozzle_dt = 0.006;          % [m]
 nozzle_ht = nozzle_dt / 2;  % [m]
 nozzle_w  = 0.050;          % [m] largeur constante du nozzle
-A_t       = nozzle_dt * nozzle_w; %[m�]
+A_t       = nozzle_dt * nozzle_w; %[m²]
 
 % Chenal Duct
 duct_w = 0.050;     % [m]
@@ -24,7 +24,7 @@ duct_h = nozzle_he; % [m]
 duct_d = 0.015;     % [m]
 duct_l = 0.270;     % [m]
 duct_coeff = (duct_d + duct_w) / duct_w; %[adimensionnel]
-A_duct = duct_w * duct_d; %[m�]
+A_duct = duct_w * duct_d; %[m²]
 
 % For this problematic
 T0 = 300; % [K]
@@ -38,9 +38,9 @@ pa = 101325;   % [Pa] ~= 1.01325[bar]
  AstarA = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M);
  veloC  = @(T) sqrt( gamma*R*T);
 % Lambda Colebrook
-% Attention formule erronn�e  lambda_cole = @(lambda_init,Re) ((-3*log10(2.03/Re * 1/sqrt(lambda_init))^(-1)))^2;  
+% Attention formule erronnée  lambda_cole = @(lambda_init,Re) ((-3*log10(2.03/Re * 1/sqrt(lambda_init))^(-1)))^2;  
 % Sutherland Formula Dry Air
-mu_ref  = 1.716*10^(-5); % [N.s/m²]
+mu_ref  = 1.716*10^(-5); % [N.s/mÂ²]
 S_ref   = 111.0;  %[K]
 T_ref   = 273.15; %[K]
 mu_T    = @(T) ( ((T/T_ref)^(3/2))*((T_ref + S_ref)/(T + S_ref)) )*mu_ref;
@@ -68,7 +68,7 @@ T0e = T0; pe = pa;
 
 
 % Calcule du M_in
-% Le fanno est dict� par le comportement du nozzle
+% Le fanno est dicté par le comportement du nozzle
 Astar = nozzle_dt*nozzle_w;
 Aexha = nozzle_de*nozzle_w;
 
@@ -84,18 +84,18 @@ lambda0 = 0.009;
 lambda = lambda0;
 error = 1;
 while error > 0.0001
-   %fM = lambda/2 * (duct_l)/Dh_duct;
-   fM = lambda * duct_coeff * duct_l / duct_d;
+   fM = lambda/2 * duct_l/duct_d;
+   %fM = lambda * duct_coeff * duct_l / duct_d;
    % On va essayer de trouver M_in 
    % pour f(M) = f(M1) - f(M2)  
    fM1 = f_M(M_in) - fM;
 
-   % On établit l'équation à faire entrer dans fsolve 
+   % On Ã©tablit l'Ã©quation Ã  faire entrer dans fsolve 
    
    f_Mnd = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - fM1 ; 
    M_ex = fsolve(f_Mnd,0.5,options);
 
-   % calcule des températures Te et Ti
+   % calcule des tempÃ©ratures Te et Ti
    Te = T0e/T0T(M_ex);
    %Ti = fTTstar(M_in) / fTTstar(M_ex) * Te;
    Ti = T0e/T0T(M_in); 
@@ -127,7 +127,7 @@ while error > 0.0001
 end
   
 T0i= T0T(M_in) * Ti;
-Qm1 = QmP(p0i,T0e,Astar);
+Qm1 = QmP(p0,T0,Astar);
 
 
 %% =======================================
@@ -174,17 +174,17 @@ lambda2 = lambda02;
 error2 = 1;
 while error2 > 0.0001
     
-   fM2 = lambda2 * duct_coeff * duct_l / duct_d;
-
+   %fM2 = lambda2 * duct_coeff * duct_l / duct_d;
+   fM2 = lambda2/2 * duct_l/duct_d;
    % pour f(M) = f(M1) - f(M2)  
    fM12 = f_M(M_ind2) - fM2;
 
-   % On établit l'équation à faire entrer dans fsolve 
+   % On Ã©tablit l'Ã©quation Ã  faire entrer dans fsolve 
    
    f_Mnd = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - fM12 ; 
    M_ex2 = fsolve(f_Mnd,0.5,options);
 
-   % calcule des températures Te et Ti
+   % calcule des tempÃ©ratures Te et Ti
    Te2 = T0/T0T(M_ex2);
    Ti2 = T0/T0T(M_ind2); 
 
@@ -217,7 +217,7 @@ end
 % Pression entree duct
 p0sh12   = p0i2 / P0sh2_P0sh1(M_sh12);
 p02     = p0sh12;
-Qm2 = QmP(p0i2,T0e,Astar);
+Qm2 = QmP(p02,T0,Astar);
 
 %% =======================================
 % Question 3)
@@ -242,17 +242,17 @@ lambda3 = lambda03;
 error3 = 1;
 while error3 > 0.0001
     
-   fM3 = lambda3 * duct_coeff * duct_l / duct_d;
-
+   %fM3 = lambda3 * duct_coeff * duct_l / duct_d;
+   fM3 = lambda3/2 * duct_l/duct_d;
    % pour f(M) = f(M1) - f(M2)  
    fM13 = f_M(M_ind3) - fM3;
 
-   % On établit l'équation à faire entrer dans fsolve 
+   % On Ã©tablit l'Ã©quation Ã  faire entrer dans fsolve 
    
    f_Mnd = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - fM13 ; 
-   M_ex3 = fsolve(f_Mnd,0.5,options);
+   M_ex3 = fsolve(f_Mnd,0.3,options);
 
-   % calcule des températures Te et Ti
+   % calcule des tempÃ©ratures Te et Ti
    Te3 = T0/T0T(M_ex3);
    Ti3 = T0/T0T(M_ind3); 
 
@@ -288,10 +288,10 @@ end
 % Pression entree duct
 p0sh13   = p0i3 / P0sh2_P0sh1(M_sh13);
 p03     = p0sh13;
-Qm3 = QmP(p03,T0e,Astar);
+Qm3 = QmP(p03,T0,Astar);
 %% ==========
 % Plotting
-step = 1000;
+step = 2000;
 Xplot = linspace(0,0.39,step);
 %% ==========
 % CASE 1: 
@@ -305,7 +305,7 @@ for i = 1 : step
      result(i,2) = p0i;
      result(i,3) = p0i/P0P(result(i,1));
   else %Fanno
-     fM = lambda * duct_coeff * (Xplot(i)-0.12)/ duct_d;
+     fM = lambda / 2 * (Xplot(i)-0.12)/ duct_d;
      f_MSolve = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - (f_M(M_in) - fM); 
      result(i,1) = fsolve(f_MSolve,0.5,options);
      result(i,2) = fp0pstar0(result(i,1))*p0star;
@@ -337,7 +337,7 @@ for i = 1 : step
      result(i,6) = p0i2/P0P(result(i,4));
   end
   if (Xplot(i) >= 0.12) %Fanno
-     fM = lambda * duct_coeff * (Xplot(i)-0.12)/ duct_d;
+     fM = lambda2 / 2 * (Xplot(i)-0.12)/ duct_d;
      f_MSolve = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - (f_M(M_ind2) - fM); 
      result(i,4) = fsolve(f_MSolve,0.5,options);
      result(i,5) = fp0pstar0(result(i,4))*p0star;
@@ -362,46 +362,49 @@ for i = 1 : step
      result(i,9) = p0sh13/P0P(result(i,7));
   end
   if (Xplot(i) > 0.12) %Fanno
-     fM = lambda * duct_coeff * (Xplot(i)-0.12)/ duct_d;
-     f_MSolve = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - (f_M(M_ind2) - fM); 
-     result(i,7) = fsolve(f_MSolve,0.5,options);
-     result(i,8) = fp0pstar0(result(i,4))*p0star;
-     result(i,9) = fppstar(result(i,4))*pstar;    
+     fM = lambda3 / 2 * (Xplot(i)-0.12)/ duct_d;
+     f_MSolve = @(M) ( (1/gamma)*( ((1-(M*M) )/(M*M)) + ((gamma+1)/2)*log(  ((gamma+1)/2*(M*M))/(1+((gamma-1)/2) *(M*M)) ) )) - (f_M(M_ind3) - fM); 
+     result(i,7) = fsolve(f_MSolve,0.2,options);
+     result(i,8) = fp0pstar0(result(i,7))*p0star;
+     result(i,9) = fppstar(result(i,7))*pstar;    
   end
 end
 %% =============================
 figure;
 subplot(3,1,1);
-plot(Xplot,result(:,1));
+plot(Xplot,result(:,1),'b-',Xplot,result(:,4),'r-',Xplot,result(:,7),'g-');
+legend('Sonic-Subsonic','Shock at 0.07m','Shock at 0.12m')
 title('M(x) Mach Number');
 subplot(3,1,2);
-plot(Xplot,result(:,2));
+plot(Xplot,result(:,2),'b-',Xplot,result(:,5),'r-',Xplot,result(:,8),'g-');
+%legend('Sonic-Subsonic','Shock at 0.07m','shock at 0.12m')
 title('P0(x) Total Pression');
 subplot(3,1,3);
-plot(Xplot,result(:,3));
+plot(Xplot,result(:,3),'b-',Xplot,result(:,6),'r-',Xplot,result(:,9),'g-');
+%legend('Sonic-Subsonic','Shock at 0.07m','shock at 0.12m','location','south)
 title('P(x) Pression');
 
-figure;
-subplot(3,1,1);
-plot(Xplot,result(:,4));
-title('M(x) Mach Number');
-subplot(3,1,2);
-plot(Xplot,result(:,5));
-title('P0(x) Total Pression');
-subplot(3,1,3);
-plot(Xplot,result(:,6));
-title('P(x) Pression');
+%figure;
+%subplot(3,1,1);
+%plot(Xplot,result(:,4));
+%title('M(x) Mach Number');
+%subplot(3,1,2);
+%plot(Xplot,result(:,5));
+%title('P0(x) Total Pression');
+%subplot(3,1,3);
+%plot(Xplot,result(:,6));
+%title('P(x) Pression');
 
-figure;
-subplot(3,1,1);
-plot(Xplot,result(:,7));
-title('M(x) Mach Number');
-subplot(3,1,2);
-plot(Xplot,result(:,8));
-title('P0(x) Total Pression');
-subplot(3,1,3);
-plot(Xplot,result(:,9));
-title('P(x) Pression');
+%figure;
+%subplot(3,1,1);
+%plot(Xplot,result(:,7));
+%title('M(x) Mach Number');
+%subplot(3,1,2);
+%plot(Xplot,result(:,8));
+%title('P0(x) Total Pression');
+%subplot(3,1,3);
+%plot(Xplot,result(:,9));
+%title('P(x) Pression');
 %% ==========
 % Result
 disp('       p0       p0i       p0e       pi        pe       M_in      M_ex     lambda     Qm');
