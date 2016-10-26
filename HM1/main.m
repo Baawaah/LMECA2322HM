@@ -97,7 +97,6 @@ while error > 0.0001
 
    % calcule des tempÃ©ratures Te et Ti
    Te = T0e/T0T(M_ex);
-   %Ti = fTTstar(M_in) / fTTstar(M_ex) * Te;
    Ti = T0e/T0T(M_in); 
 
    p0e = P0P(M_ex)*pe;
@@ -128,26 +127,6 @@ end
   
 T0i= T0T(M_in) * Ti;
 Qm1 = QmP(p0,T0,Astar);
-
-
-%% =======================================
-
-
-
-%% =======================================
-%x = linspace(0.3,2,100); 
-%for i = 1 : 100 
-%    y(i) = f_M(x(i)); 
-%end
-%plot(x,y)
-
-%% =======================================
-%x = linspace(0,0.12,1000); 
-%for i = 1 : 1000 
-%    y4(i) = height(x(i));
-%end
-%plot(x,y4);
-%axis('equal');
 
 %% =======================================
 % Question 2)
@@ -231,18 +210,13 @@ M_sh23 = (1 + (gamma - 1)/2*M_sh13^2 ) / (gamma*M_sh13^2 - (gamma - 1)/2 );
 Astar23 = A_duct * ( ( ((gamma+1)/2) / (1+(gamma-1)/2 * M_sh23*M_sh23) )^((gamma+1)/(2*(gamma-1))) * M_sh23 );
 Astar23Aduct = Astar23 / A_duct;
 
-%Astar23Aductfsolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M) - Astar23Aduct;
-%M_ind3 = fsolve(Astar23Aductfsolve,0.5,options);
 M_ind3  = M_sh23;
-
-
 
 lambda03 = 0.009;
 lambda3 = lambda03;
 error3 = 1;
 while error3 > 0.0001
     
-   %fM3 = lambda3 * duct_coeff * duct_l / duct_d;
    fM3 = lambda3/2 * duct_l/duct_d;
    % pour f(M) = f(M1) - f(M2)  
    fM13 = f_M(M_ind3) - fM3;
@@ -330,7 +304,6 @@ for i = 1 : step
      result(i,6) = p0sh12/P0P(result(i,4));
   end
   if (Xplot(i) >= 0.07) && (Xplot(i) < 0.12 )
-     %Astar22 = (height(Xplot(i)) * nozzle_w) * ( ( ((gamma+1)/2) / (1+(gamma-1)/2 * M_sh22*M_sh22) )^((gamma+1)/(2*(gamma-1))) * M_sh22 );
      Astar22Aductfsolve = @(M) ( (((gamma+1)/2)/( 1+ (gamma-1)/2 * M*M ))^((gamma+1)/(2*(gamma-1)))*M) - (Astar22 /(2*height(Xplot(i))*nozzle_w));
      result(i,4) = fsolve(Astar22Aductfsolve,0.5,options);
      result(i,5) = p0i2;
